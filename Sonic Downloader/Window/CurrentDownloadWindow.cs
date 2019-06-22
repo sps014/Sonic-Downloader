@@ -1,11 +1,7 @@
 ﻿using Sonic.Downloader;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,14 +33,15 @@ namespace Sonic_Downloader.Window
             Invoke((MethodInvoker)delegate ()
             {
                 UpdateProgress(e.File);
+                
             });
         }
 
         public void UpdateProgress(Downloadable File)
         {
-            label8.Text = File.URL;
+            textBox1.Text = File.URL;
             label9.Text = downloader.DownloadStatus.ToString();
-            label11.Text = NetworkHelper.DataFormatter(File.Downloaded);
+            label11.Text = NetworkHelper.DataFormatter(File.Downloaded)+"  ( "+File.Percent.ToString("0.00")+"% )";
             label12.Text = NetworkHelper.DataFormatter(File.TransferRate) + "/Sec";
             label14.Text = "No";
             Text = downloader.File.FileName;
@@ -61,12 +58,12 @@ namespace Sonic_Downloader.Window
                 if (File.DownloadType == DownloadTypes.MultiplePartResumable)
                 {
                     label14.Text = "Yes";
-                    button1.Enabled = true;
+                    button1.Visible = true;
 
                 }
                 else
                 {
-                    button1.Enabled = false;
+                    button1.Visible = false;
                 }
             }
             else

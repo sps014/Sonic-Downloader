@@ -13,7 +13,7 @@ namespace Sonic.Downloader
 
         public long Downloaded { get; set; }
         public long TransferRate { get; set; }
-        public double Percent => Downloaded * 1.0f / Size;
+        public double Percent => Downloaded * 100.0f / Size;
 
         public string FileName { get; set; } = "";
         public string FilePath { get; set; } = @"C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug";

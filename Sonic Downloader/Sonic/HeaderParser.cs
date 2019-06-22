@@ -16,7 +16,7 @@ namespace Sonic.Downloader
             if (File != null)
                 this.File = File;
 
-            //optimize netwok connction
+            //optimize netwok connection
             NetworkHelper.ConnectionOptimizer();
 
         }

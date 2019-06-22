@@ -2,6 +2,8 @@
 using Sonic_Downloader.Window;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Sonic_Downloader
@@ -42,6 +44,8 @@ namespace Sonic_Downloader
         {
             Invoke((MethodInvoker)delegate ()
             {
+            if (isDownloadURLDuplicate(File.URL) == -1)
+            {
                 DownloadNowWindow dnw = new DownloadNowWindow();
                 dnw.URL = File.URL;
                 dnw.FullFilePath = File.FullFilePath;
@@ -62,21 +66,68 @@ namespace Sonic_Downloader
                     DownloaderList.Add(downloader);
                     downloader.Download();
                 }
+            }
+            else
+            {
+                var r = MessageBox.Show("Download File Already added , Do you want to over write it", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                switch (r)
+                {
+                    case DialogResult.Yes:
+                        ReDownload(DownloaderList[isDownloadURLDuplicate(File.URL)]);
+                            break;
+
+                    }
+                }
             });
             
         }
+        private int isDownloadURLDuplicate(string url)
+        {
+            int res = -1;
 
+            int j = 0;
+            foreach(Downloader d in DownloaderList)
+            {
+                if (d.File.URL == url)
+                    return j;
+                j++;
+            }
+            return res;
+        }
         private void Downloader_OnProgress(object sender, ProgressEventArgs e)
         {
             Invoke((MethodInvoker)delegate ()
             {
                 UpdateChangesInGrid();
                 ToggleButtons(sender as Downloader);
+                var downloader = sender as Downloader;
+                if (downloader.File.Completed)
+                {
+                    var res = MessageBox.Show("File Downloaded Successfully Do you wish to open.", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (res == DialogResult.Yes)
+                    {
+                        if (File.Exists(downloader.File.FullFilePath))
+                        {
+                            string cmd = "explorer.exe";
+                            string args = "/select, " + downloader.File.FullFilePath;
+                            Process.Start(cmd, args);
+                        }
+                        else
+                        {
+                            MessageBox.Show("File is no longer available there", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+
+                    }
+                }
             });
         }
 
         private void UpdateChangesInGrid()
         {
+            int selectionIndex = -1;
+            if(dataGridView1.Rows.Count>0)
+             selectionIndex = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+
             dataGridView1.Columns.Clear();
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.Columns.Add(new DataGridViewColumn()
@@ -105,7 +156,7 @@ namespace Sonic_Downloader
             });
             dataGridView1.Columns.Add(new DataGridViewColumn()
             {
-                HeaderText = "Completed",
+                HeaderText = "Percent",
                 CellTemplate = new DataGridViewTextBoxCell(),
                 Width = 80
             });
@@ -119,16 +170,24 @@ namespace Sonic_Downloader
 
             foreach (Downloader downloader in DownloaderList)
             {
+                bool isUnknown = downloader.File.DownloadType == DownloadTypes.SinglePartUnknownSize ? true : false;
                 object[] rows = new object[]
                 {
                     downloader.File.FileName,
-                    NetworkHelper.DataFormatter(downloader.File.Size),
+                    isUnknown?"Unknown":NetworkHelper.DataFormatter(downloader.File.Size),
                     NetworkHelper.DataFormatter(downloader.File.Downloaded),
-                    NetworkHelper.DataFormatter(downloader.File.TransferRate),
-                    downloader.File.Percent,
+                    NetworkHelper.DataFormatter(downloader.File.TransferRate)+"/Sec",
+                    isUnknown?"Unknown":downloader.File.Percent.ToString("0.00")+"%",
                     downloader.File.Description
                 };
                 dataGridView1.Rows.Add(rows);
+            }
+            if(selectionIndex>=0)
+            {
+                if(dataGridView1.Rows.Count>selectionIndex)
+                {
+                    dataGridView1.Rows[selectionIndex].Selected=true;
+                }
             }
 
         }
@@ -148,6 +207,12 @@ namespace Sonic_Downloader
                     cdw.Downloader = DownloaderList[ind];
                     cdw.UpdateProgress(DownloaderList[ind].File);
                     cdw.ShowDialog();
+                }
+                else
+                {
+                    FilePropertiesWindow fpw = new FilePropertiesWindow();
+                    fpw.Downloader = DownloaderList[ind];
+                    fpw.ShowDialog();
                 }
             }
         }
@@ -279,13 +344,29 @@ namespace Sonic_Downloader
                 parser.ParseHeader();
             }
         }
+        private void ReDownload(Downloader d)
+        {
+
+            Downloadable file = new Downloadable() { URL = d.File.URL };
+            DownloaderList.Remove(d);
+            HeaderParser parser = new HeaderParser(file);
+            parser.OnParseSuccess += parser_Redownload;
+            parser.OnError += Down_OnError;
+            parser.ParseHeader();
+        }
         void parser_Redownload(object sender,Downloadable file)
         {
-            Downloader downloader = new Downloader(file);
-            downloader.OnError += Down_OnError;
-            downloader.OnDownloadFinished += Downloader_OnProgress;
-            downloader.OnProgress += Downloader_OnProgress;
-            DownloaderList.Add(downloader);
+            Invoke((MethodInvoker)delegate ()
+            {
+                Downloader downloader = new Downloader(file);
+                downloader.OnError += Down_OnError;
+                downloader.OnDownloadFinished += Downloader_OnProgress;
+                downloader.OnProgress += Downloader_OnProgress;
+                DownloaderList.Add(downloader);
+                downloader.Download();
+                UpdateChangesInGrid();
+            });
+            
         }
         private void StopToolStrip_Click(object sender, EventArgs e)
         {
@@ -300,6 +381,7 @@ namespace Sonic_Downloader
             if (ind >= 0)
             {
                 ToggleButtons(DownloaderList[ind]);
+               
             }
         }
 
@@ -349,6 +431,11 @@ namespace Sonic_Downloader
         private void RedownloadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReDownload();
+        }
+
+        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
