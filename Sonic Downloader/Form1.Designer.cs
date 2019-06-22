@@ -28,57 +28,271 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.tasksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addURLMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadNowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.addUrlToolStrip = new System.Windows.Forms.ToolStripButton();
+            this.resumeToolStrip = new System.Windows.Forms.ToolStripButton();
+            this.stopToolStrip = new System.Windows.Forms.ToolStripButton();
+            this.deleteToolStrip = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.menuStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // menuStrip1
             // 
-            this.button1.Location = new System.Drawing.Point(265, 202);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(117, 45);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "pause";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.menuStrip1.BackColor = System.Drawing.Color.Cornsilk;
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tasksToolStripMenuItem,
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1279, 28);
+            this.menuStrip1.TabIndex = 4;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // button2
+            // tasksToolStripMenuItem
             // 
-            this.button2.Location = new System.Drawing.Point(421, 202);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(117, 45);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "down";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            this.tasksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addURLMenu,
+            this.closeToolStripMenuItem});
+            this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
+            this.tasksToolStripMenuItem.Text = "Tasks";
             // 
-            // progressBar1
+            // addURLMenu
             // 
-            this.progressBar1.Location = new System.Drawing.Point(131, 338);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(544, 23);
-            this.progressBar1.TabIndex = 3;
+            this.addURLMenu.Name = "addURLMenu";
+            this.addURLMenu.Size = new System.Drawing.Size(150, 26);
+            this.addURLMenu.Text = "Add URL";
+            this.addURLMenu.Click += new System.EventHandler(this.AddURLToolStripMenuItem_Click);
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(150, 26);
+            this.closeToolStripMenuItem.Text = "Close";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.redownloadToolStripMenuItem,
+            this.downloadNowToolStripMenuItem,
+            this.stopToolStripMenuItem,
+            this.removeToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // redownloadToolStripMenuItem
+            // 
+            this.redownloadToolStripMenuItem.Name = "redownloadToolStripMenuItem";
+            this.redownloadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.redownloadToolStripMenuItem.Text = "Redownload";
+            this.redownloadToolStripMenuItem.Click += new System.EventHandler(this.RedownloadToolStripMenuItem_Click);
+            // 
+            // downloadNowToolStripMenuItem
+            // 
+            this.downloadNowToolStripMenuItem.Name = "downloadNowToolStripMenuItem";
+            this.downloadNowToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.downloadNowToolStripMenuItem.Text = "Download Now";
+            this.downloadNowToolStripMenuItem.Click += new System.EventHandler(this.DownloadNowToolStripMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.StopToolStripMenuItem_Click);
+            // 
+            // removeToolStripMenuItem
+            // 
+            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.removeToolStripMenuItem.Text = "Remove";
+            this.removeToolStripMenuItem.Click += new System.EventHandler(this.RemoveToolStripMenuItem_Click);
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addUrlToolStrip,
+            this.resumeToolStrip,
+            this.stopToolStrip,
+            this.toolStripSeparator1,
+            this.deleteToolStrip,
+            this.toolStripSeparator2,
+            this.toolStripButton5,
+            this.toolStripSeparator3,
+            this.toolStripButton6});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 28);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(1279, 27);
+            this.toolStrip1.TabIndex = 5;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.dataGridView1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 55);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1279, 627);
+            this.panel1.TabIndex = 6;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.MultiSelect = false;
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersWidth = 51;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(1279, 627);
+            this.dataGridView1.StandardTab = true;
+            this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.DataGridView1_SelectionChanged);
+            this.dataGridView1.Click += new System.EventHandler(this.DataGridView1_Click);
+            this.dataGridView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.DataGridView1_MouseDoubleClick);
+            // 
+            // addUrlToolStrip
+            // 
+            this.addUrlToolStrip.Image = global::Sonic_Downloader.Properties.Resources.document;
+            this.addUrlToolStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addUrlToolStrip.Name = "addUrlToolStrip";
+            this.addUrlToolStrip.Size = new System.Drawing.Size(91, 24);
+            this.addUrlToolStrip.Text = "Add URL";
+            this.addUrlToolStrip.Click += new System.EventHandler(this.ToolStripButton1_Click);
+            // 
+            // resumeToolStrip
+            // 
+            this.resumeToolStrip.Image = global::Sonic_Downloader.Properties.Resources.play_button;
+            this.resumeToolStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.resumeToolStrip.Name = "resumeToolStrip";
+            this.resumeToolStrip.Size = new System.Drawing.Size(85, 24);
+            this.resumeToolStrip.Text = "Resume";
+            this.resumeToolStrip.Click += new System.EventHandler(this.ResumeToolStrip_Click);
+            // 
+            // stopToolStrip
+            // 
+            this.stopToolStrip.Image = global::Sonic_Downloader.Properties.Resources.stop;
+            this.stopToolStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stopToolStrip.Name = "stopToolStrip";
+            this.stopToolStrip.Size = new System.Drawing.Size(64, 24);
+            this.stopToolStrip.Text = "Stop";
+            this.stopToolStrip.Click += new System.EventHandler(this.StopToolStrip_Click);
+            // 
+            // deleteToolStrip
+            // 
+            this.deleteToolStrip.Image = global::Sonic_Downloader.Properties.Resources.recycle_bin;
+            this.deleteToolStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteToolStrip.Name = "deleteToolStrip";
+            this.deleteToolStrip.Size = new System.Drawing.Size(77, 24);
+            this.deleteToolStrip.Text = "Delete";
+            this.deleteToolStrip.Click += new System.EventHandler(this.DeleteToolStrip_Click);
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.Image = global::Sonic_Downloader.Properties.Resources.gears;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(86, 24);
+            this.toolStripButton5.Text = "Settings";
+            // 
+            // toolStripButton6
+            // 
+            this.toolStripButton6.Image = global::Sonic_Downloader.Properties.Resources.play_button__1_;
+            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton6.Name = "toolStripButton6";
+            this.toolStripButton6.Size = new System.Drawing.Size(173, 24);
+            this.toolStripButton6.Text = "Youtube Downloader";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(1279, 682);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Sonic Downloader";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem tasksToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton addUrlToolStrip;
+        private System.Windows.Forms.ToolStripButton resumeToolStrip;
+        private System.Windows.Forms.ToolStripButton stopToolStrip;
+        private System.Windows.Forms.ToolStripMenuItem addURLMenu;
+        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton deleteToolStrip;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton toolStripButton6;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem redownloadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downloadNowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 

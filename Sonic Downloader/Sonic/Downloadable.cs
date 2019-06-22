@@ -20,10 +20,14 @@ namespace Sonic.Downloader
 
         public string FullFilePath => System.IO.Path.Combine(FilePath, FileName);
 
-        public uint DegreeOfParallelism { get; set; } = 1;
+        public uint DegreeOfParallelism { get; set; } = 8;
 
+        public string Referer { get; set; }
         public string Description { get; set; } = " ";
 
+        public List<Range> RangeList { get; set; } = new List<Range>();
+
+        public bool Completed => DownloadType != DownloadTypes.SinglePartUnknownSize ? (Downloaded >= Size ? true : false ): true;
 
         public DownloadTypes DownloadType { get; set; }
 

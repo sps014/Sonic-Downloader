@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Sonic.Downloader
 {
@@ -37,22 +36,37 @@ namespace Sonic.Downloader
 
             Task.Run(() =>
             {
-                //Get File Size from server
-                SetFileSize();
+                try
+                {
+                    //Get File Size from server
+                    SetFileSize();
 
-                //Get File Name And File Type web server
-                GetFilePropertiesFromServer();
+                    //Get File Name And File Type web server
+                    GetFilePropertiesFromServer();
 
 
-                //Get explicit file Name
-                ExplicitFileName();
+                    //Get explicit file Name
+                    ExplicitFileName();
 
-                //Inform User About Task Completition
-                OnParseSuccess?.Invoke(this, this.File);
+                    //Remove Illegal Character from file Name 
+                    RemoveIllegalCharFromName();
+
+                    //Inform User About Task Completition
+                    OnParseSuccess?.Invoke(this, this.File);
+                }
+                catch(Exception e)
+                {
+                    OnError?.Invoke(this, e);
+                }
             });
 
         }
- 
+
+        private void RemoveIllegalCharFromName()
+        {
+            File.FileName = NetworkHelper.ReplaceInvalidPathCharacter(File.FileName);
+        }
+
         private  void GetFilePropertiesFromServer()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(File.URL);
@@ -67,8 +81,20 @@ namespace Sonic.Downloader
 
                 //Get File Type From Server
                 SetFileType((HttpWebResponse)response);
+
+                //Verify Status Code
+                VerifyStatus(response as HttpWebResponse);
             }
         }
+
+        private void VerifyStatus(HttpWebResponse response)
+        {
+            if((int)(response.StatusCode)/100!=2)
+            {
+                OnError?.Invoke(this, new Exception($"Web site : {File.URL} returned {response.StatusCode}"));
+            }
+        }
+
         private  void SetFileSize()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(File.URL);
@@ -132,15 +158,21 @@ namespace Sonic.Downloader
         }
         private void ExplicitFileName()
         {
+
             if (!string.IsNullOrWhiteSpace(File.FileName))
                 return;
 
             Uri uri = new Uri(File.URL);
             string FileNameEncoded = uri.Segments.Last();
             File.FileName = WebUtility.UrlDecode(FileNameEncoded);
+
+  
         }
 
         public delegate void OnParseSuccessHandler(object sender, Downloadable File);
         public event OnParseSuccessHandler OnParseSuccess;
+
+        public delegate void OnErrorHandler(object sender, Exception e);
+        public event OnErrorHandler OnError;
     }
 }

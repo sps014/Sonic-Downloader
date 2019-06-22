@@ -63,7 +63,8 @@ namespace Sonic.Downloader
             long downloadAmountUntilExecuted = 0;
 
             using (var res = await req.GetResponseAsync())
-            {
+            { 
+
                 //get stream object
                 using (var ress = res.GetResponseStream())
                 {
@@ -153,5 +154,8 @@ namespace Sonic.Downloader
 
         public delegate void DownloadFinishedHandler(object sender, FinishedEventArgs e);
         public event DownloadFinishedHandler OnDownloadFinished;
+
+        public delegate void OnErrorHandler(object sender, Exception e);
+        public event OnErrorHandler OnError;
     }
 }

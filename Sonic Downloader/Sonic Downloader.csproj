@@ -65,6 +65,31 @@
     <Compile Include="Sonic\SaveLoadDownloadable.cs" />
     <Compile Include="Sonic\SinglePartKnownDownloader.cs" />
     <Compile Include="Sonic\SinglePartUnknownDownloader.cs" />
+    <Compile Include="Sonic\UrlVerification.cs" />
+    <Compile Include="Window\AddURLWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\AddURLWindow.Designer.cs">
+      <DependentUpon>AddURLWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Window\CurrentDownloadWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\CurrentDownloadWindow.Designer.cs">
+      <DependentUpon>CurrentDownloadWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Window\DownloadNowWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\DownloadNowWindow.Designer.cs">
+      <DependentUpon>DownloadNowWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Window\FilePropertiesWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Window\FilePropertiesWindow.Designer.cs">
+      <DependentUpon>FilePropertiesWindow.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -76,7 +101,20 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Window\AddURLWindow.resx">
+      <DependentUpon>AddURLWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window\CurrentDownloadWindow.resx">
+      <DependentUpon>CurrentDownloadWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window\DownloadNowWindow.resx">
+      <DependentUpon>DownloadNowWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Window\FilePropertiesWindow.resx">
+      <DependentUpon>FilePropertiesWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -89,6 +127,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\recycle-bin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gears.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play-button %281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

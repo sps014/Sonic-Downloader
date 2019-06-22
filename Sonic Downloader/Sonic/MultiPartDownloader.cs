@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Sonic.Downloader
 {
@@ -15,11 +16,13 @@ namespace Sonic.Downloader
         public Downloadable File { get; set; }
         public long BufferSize { get; set; } = 1024 * 4;
         public int Timeout { get; set; } = 30 * 1000;
-        private List<Range> RangeList { get; set; } = new List<Range>();
+        //private List<Range> RangeList { get; set; } = new List<Range>();
 
         private FileStream fileStream;
 
         private CancellationTokenSource token;
+
+        private bool reportedOnce = false;
         public MultiPartDownloader(Downloadable File=null)
         {
             if(File!=null)
@@ -32,8 +35,8 @@ namespace Sonic.Downloader
             fileStream = new FileStream(File.FullFilePath, FileMode.OpenOrCreate,
                 FileAccess.ReadWrite, FileShare.ReadWrite);
 
-            if(RangeList.Count<=0)
-            CalculateRanges();
+            if (File.RangeList.Count <= 0)
+                CalculateRanges();
 
             ParallelDownload();
         }
@@ -57,97 +60,108 @@ namespace Sonic.Downloader
 
             ReportStart();
 
-            Parallel.ForEach(RangeList, options, range => RangeDownloader(range));
+            reportedOnce = false;
 
+            Parallel.ForEach(File.RangeList, options, range => RangeDownloader(range));
+
+            fileStream.Close();
             ReportEnd();
         }
         private void RangeDownloader(Range range)
         {
 
-
-            //long live buffer
-            byte[] buffer = new byte[BufferSize];
-
-            //long length=GetContentLengthProvided(File.URL, range);
-            long length = File.Size;
-
-            //Stopwatch for timely reporting of the progress
-            Stopwatch watch = new Stopwatch();
-
-            //Start watch as we are going to begin download
-            watch.Start();
-
-            long downloadedAmountTillExecuted = 0;
-
-            //Download Whole Range data
-            while (range.Downloaded < range.Diff)
+            try
             {
-                if (token.IsCancellationRequested)
-                    break;
 
-                //Using FileDownloadResponse Get WebResponse 
-                using (var res = FileDownloadResponse(range))
-                { 
+                //long live buffer
+                byte[] buffer = new byte[BufferSize];
 
-                    //Length of the chunk supplied
-                    length = res.ContentLength;
+                //long length=GetContentLengthProvided(File.URL, range);
+                long length = File.Size;
 
-                    using (var ress = res.GetResponseStream())
+                //Stopwatch for timely reporting of the progress
+                Stopwatch watch = new Stopwatch();
+
+                //Start watch as we are going to begin download
+                watch.Start();
+
+                long downloadedAmountTillExecuted = 0;
+
+                //Download Whole Range data
+                while (range.Downloaded < range.Diff)
+                {
+                    if (token.IsCancellationRequested)
+                        break;
+
+                    //Using FileDownloadResponse Get WebResponse 
+                    using (var res = FileDownloadResponse(range))
                     {
-                        long read = 0; //amount read in one go (fs,response streams)
-                        long totalRead =0; //total amount read  (fs,response streams)
 
-                        //Buffer Data for chunking
-                        byte[] data = new byte[BufferSize];
+                        //Length of the chunk supplied
+                        length = res.ContentLength;
 
-
-                        //iterate while total amount read is less then equal to content  length
-                        while (totalRead < length)
+                        using (var ress = res.GetResponseStream())
                         {
-                            if (token.IsCancellationRequested)
-                                break;
+                            long read = 0; //amount read in one go (fs,response streams)
+                            long totalRead = 0; //total amount read  (fs,response streams)
 
-                            //Read Response Stream in chunked array and get read amount 
-                            read = ress.Read(data, 0, data.Length);
-
-                            //Write in Output Stream 
-                            fileStream.Position = range.Start+range.Downloaded;
-                            fileStream.Write(data, 0, (int)read);
-
-                            //Update total read
-                            totalRead += read;
-                            downloadedAmountTillExecuted += read;
+                            //Buffer Data for chunking
+                            byte[] data = new byte[BufferSize];
 
 
-                            //Update Range Downloaded Amount
-                            range.Downloaded += read;
-
-                            //Update Total Amount downloaded in File
-                            File.Downloaded += read;
-
-                            //If time is 1 sec show progress
-                            if (watch.ElapsedMilliseconds >= 1000)
+                            //iterate while total amount read is less then equal to content  length
+                            while (totalRead < length)
                             {
+                                if (token.IsCancellationRequested)
+                                    break;
 
-                                File.TransferRate = downloadedAmountTillExecuted;
-                                downloadedAmountTillExecuted = 0;
+                                //Read Response Stream in chunked array and get read amount 
+                                read = ress.Read(data, 0, data.Length);
 
-                                // reports progress event 
-                                ReportProgress();
+                                //Write in Output Stream 
+                                fileStream.Position = range.Start + range.Downloaded;
+                                fileStream.Write(data, 0, (int)read);
 
-                                 //restart the stopwatch
-                                 watch.Restart();
+                                //Update total read
+                                totalRead += read;
+                                downloadedAmountTillExecuted += read;
+
+
+                                //Update Range Downloaded Amount
+                                range.Downloaded += read;
+
+                                //Update Total Amount downloaded in File
+                                File.Downloaded += read;
+
+                                //If time is 1 sec show progress
+                                if (watch.ElapsedMilliseconds >= 1000)
+                                {
+
+                                    File.TransferRate = downloadedAmountTillExecuted;
+                                    downloadedAmountTillExecuted = 0;
+
+                                    // reports progress event 
+                                    ReportProgress();
+
+                                    //restart the stopwatch
+                                    watch.Restart();
+                                }
+
                             }
-
                         }
+
                     }
 
                 }
-               
             }
-
-
-            fileStream.Close();
+            catch(Exception e)
+            {
+                if (!reportedOnce)
+                {
+                    reportedOnce = true;
+                    OnError?.Invoke(this, e);
+                }
+            }
 
         }
 
@@ -160,7 +174,7 @@ namespace Sonic.Downloader
         private void ReportProgress()
         {
             ProgressEventArgs args = new ProgressEventArgs();
-            args.RangeList = RangeList;
+            args.RangeList = File.RangeList;
            
             args.File = File;
 
@@ -182,28 +196,28 @@ namespace Sonic.Downloader
 
         private void CalculateRanges()
         {
-            RangeList.Clear();
+            File.RangeList.Clear();
             for (int i = 0; i < File.DegreeOfParallelism - 1; i++)
             {
                 Range r = new Range();
                 r.Start = (long)((i) * File.Size * 1.0f / File.DegreeOfParallelism);
                 r.End = (long)((i + 1) * File.Size * 1.0f / File.DegreeOfParallelism) - 1;
 
-                RangeList.Add(r);
+                File.RangeList.Add(r);
 
             }
 
             Range end = new Range();
-            if (RangeList.Any())
+            if (File.RangeList.Any())
             {
-                end.Start = RangeList.Last().End + 1;
+                end.Start = File.RangeList.Last().End + 1;
             }
             else
                 end.Start = 0;
 
             end.End = File.Size - 1;
 
-            RangeList.Add(end);
+            File.RangeList.Add(end);
         }
         private WebResponse FileDownloadResponse(Range range)
         {
@@ -239,5 +253,8 @@ namespace Sonic.Downloader
          
         public delegate void DownloadFinishedHandler(object sender, FinishedEventArgs e);
         public event DownloadFinishedHandler OnDownloadFinished;
+
+        public delegate void OnErrorHandler(object sender, Exception e);
+        public event OnErrorHandler OnError;
     }
 }

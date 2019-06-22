@@ -15,6 +15,7 @@ namespace Sonic.Downloader
         private SinglePartUnknownDownloader singlePartUnknownDownloader;
         private MultiPartDownloader multiPartDownloader=new MultiPartDownloader();
 
+
         public Downloader(Downloadable File=null)
         {
             //optimize the network connction
@@ -35,6 +36,12 @@ namespace Sonic.Downloader
                 throw new Exception("FileName empty Maybe you forgot to parse the header using HeaderParser");
             }
 
+            if(DownloadStatus==Status.Downloading)
+            {
+                return;
+            }
+
+            DownloadStatus = Status.Downloading;
 
             Task.Run(()=>
             {
@@ -55,6 +62,12 @@ namespace Sonic.Downloader
         }
         public void Pause()
         {
+            if(DownloadStatus!=Status.Downloading)
+            {
+                return;
+            }
+            DownloadStatus = Status.NotDownloading;
+
             if (File.DownloadType == DownloadTypes.MultiplePartResumable)
             {
                 multiPartDownloader.Pause();
@@ -82,17 +95,24 @@ namespace Sonic.Downloader
             singlePartUnknownDownloader.OnDownloadStarted += SinglePartUnknownDownloader_OnDownloadStarted;
             singlePartUnknownDownloader.OnProgress += SinglePartUnknownDownloader_OnProgress;
             singlePartUnknownDownloader.OnDownloadFinished += SinglePartUnknownDownloader_OnDownloadFinished;
-
+            singlePartUnknownDownloader.OnError += SinglePartUnknownDownloader_OnError;
             singlePartUnknownDownloader.SingleDownload();
         }
+
+        private void SinglePartUnknownDownloader_OnError(object sender, Exception e)
+        {
+            OnError?.Invoke(this, e);
+        }
+
         private void MultiplePartDownloader(bool restart=false)
         {
-            //multiPartDownloader = new MultiPartDownloader(File);
+            multiPartDownloader = new MultiPartDownloader(File);
             multiPartDownloader.File = File;
             //MultiDownloader Set Association
             multiPartDownloader.OnDownloadStarted += MultiPartDownloader_OnDownloadStarted;
             multiPartDownloader.OnProgress += MultiPartDownloader_OnProgress;
             multiPartDownloader.OnDownloadFinished += MultiPartDownloader_OnDownloadFinished;
+            multiPartDownloader.OnError += MultiPartDownloader_OnError;
 
             if (restart)
                 File.Downloaded = 0;
@@ -100,33 +120,48 @@ namespace Sonic.Downloader
             multiPartDownloader.MultiDownload();
         }
 
+        private void MultiPartDownloader_OnError(object sender, Exception e)
+        {
+            DownloadStatus = Status.NotDownloading;
+            OnError?.Invoke(this, e);
+        }
+
         private void MultiPartDownloader_OnDownloadFinished(object sender, FinishedEventArgs e)
         {
+            DownloadStatus = Status.NotDownloading;
             OnDownloadFinished?.Invoke(this, e);
         }
 
         private void MultiPartDownloader_OnProgress(object sender, ProgressEventArgs e)
         {
+            DownloadStatus = Status.Downloading;
             OnProgress?.Invoke(this, e);
         }
 
         private void MultiPartDownloader_OnDownloadStarted(object sender, StartedEventArgs e)
         {
+            DownloadStatus = Status.NotDownloading;
             OnDownloadStarted?.Invoke(this, e);
         }
 
         private void SinglePartKnownDownloader_OnDownloadFinished(object sender, FinishedEventArgs e)
         {
+            DownloadStatus = Status.NotDownloading;
+
             OnDownloadFinished?.Invoke(this, e);
         }
 
         private void SinglePartKnownDownloader_OnProgress(object sender, ProgressEventArgs e)
         {
+            DownloadStatus = Status.Downloading;
+
             OnProgress?.Invoke(this, e);
         }
 
         private void SinglePartKnownDownloader_OnDownloadStarted(object sender, StartedEventArgs e)
         {
+            DownloadStatus = Status.NotDownloading;
+
             OnDownloadStarted?.Invoke(this, e);
         }
 
@@ -134,16 +169,20 @@ namespace Sonic.Downloader
 
         private void SinglePartUnknownDownloader_OnDownloadFinished(object sender, FinishedEventArgs e)
         {
+            DownloadStatus = Status.NotDownloading;
             OnDownloadFinished?.Invoke(this, e);
         }
 
         private void SinglePartUnknownDownloader_OnProgress(object sender, ProgressEventArgs e)
         {
+            DownloadStatus = Status.Downloading;
+
             OnProgress?.Invoke(this, e);
         }
 
         private void SinglePartUnknownDownloader_OnDownloadStarted(object sender, StartedEventArgs e)
         {
+            DownloadStatus = Status.NotDownloading;
             OnDownloadStarted?.Invoke(this, e);
         }
 
@@ -156,6 +195,16 @@ namespace Sonic.Downloader
 
         public delegate void DownloadFinishedHandler(object sender, FinishedEventArgs e);
         public event DownloadFinishedHandler OnDownloadFinished;
+
+        public delegate void OnErrorHandler(object sender, Exception e);
+        public event OnErrorHandler OnError;
+        public Status DownloadStatus { get; set; } = Status.NotDownloading;
+
+        public enum Status
+        {
+            Downloading,
+            NotDownloading
+        }
 
     }
 }
