@@ -13,7 +13,7 @@ namespace Sonic_Downloader.Window
 {
     public partial class SettingsWindow : Form
     {
-        public GeneralSettings generalSettings=new GeneralSettings();
+        public static GeneralSettings GeneralSettings=new GeneralSettings();
         public SettingsWindow()
         {
             InitializeComponent();
@@ -21,7 +21,7 @@ namespace Sonic_Downloader.Window
         }
         void UpdateControls()
         {
-            switch(generalSettings.MaxConnection)
+            switch(GeneralSettings.MaxConnection)
             {
                 case 1:
                     comboBox1.SelectedIndex = 0;
@@ -48,31 +48,37 @@ namespace Sonic_Downloader.Window
                     comboBox1.SelectedIndex = 7;
                     break;
             }
-            numericUpDown1.Value = generalSettings.Timeout;
+            numericUpDown1.Value = GeneralSettings.Timeout;
         }
         private void SettingsWindow_Load(object sender, EventArgs e)
         {
-            JSONHelper.DownloadableConfigPath = "settings.json";
-            if(File.Exists(JSONHelper.DownloadableConfigPath))
-            {
-                generalSettings=JSONHelper.LoadFiles() as GeneralSettings;
+            if(LoadSettings())
                 UpdateControls();
-            }
+            
         }
         void SaveSettings()
         {
-            generalSettings.MaxConnection = int.Parse(comboBox1.SelectedItem.ToString());
-            generalSettings.Timeout = (int)numericUpDown1.Value;
+            GeneralSettings.MaxConnection = int.Parse(comboBox1.SelectedItem.ToString());
+            GeneralSettings.Timeout = (int)numericUpDown1.Value;
 
             JSONHelper.DownloadableConfigPath = "settings.json";
-            JSONHelper.SaveFiles(generalSettings);
+            JSONHelper.SaveFiles(GeneralSettings);
         }
-        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        public static bool LoadSettings()
         {
-            SaveSettings();
+            JSONHelper.DownloadableConfigPath = "settings.json";
+            if (File.Exists(JSONHelper.DownloadableConfigPath))
+            {
+                GeneralSettings = JSONHelper.LoadFiles();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        private void NumericUpDown1_ValueChanged(object sender, EventArgs e)
+        private void SettingsWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
         }

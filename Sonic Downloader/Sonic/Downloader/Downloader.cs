@@ -14,6 +14,7 @@ namespace Sonic.Downloader
         private SinglePartKnownDownloader singlePartKnownDownloader;
         private SinglePartUnknownDownloader singlePartUnknownDownloader;
         private MultiPartDownloader multiPartDownloader=new MultiPartDownloader();
+        public int Timeout { get; set; } = 60 * 1000;
 
 
         public Downloader(Downloadable File=null)
@@ -84,6 +85,7 @@ namespace Sonic.Downloader
         private void SinglePartKnownDownload()
         {
             singlePartKnownDownloader = new SinglePartKnownDownloader(File);
+            singlePartKnownDownloader.Timeout = Timeout;
             singlePartKnownDownloader.OnDownloadStarted += SinglePartKnownDownloader_OnDownloadStarted;
             singlePartKnownDownloader.OnProgress += SinglePartKnownDownloader_OnProgress;
             singlePartKnownDownloader.OnDownloadFinished += SinglePartKnownDownloader_OnDownloadFinished;
@@ -92,6 +94,7 @@ namespace Sonic.Downloader
         private void SinglePartUnkownDownload()
         {
             singlePartUnknownDownloader = new SinglePartUnknownDownloader(File);
+            singlePartUnknownDownloader.Timeout = Timeout;
             singlePartUnknownDownloader.OnDownloadStarted += SinglePartUnknownDownloader_OnDownloadStarted;
             singlePartUnknownDownloader.OnProgress += SinglePartUnknownDownloader_OnProgress;
             singlePartUnknownDownloader.OnDownloadFinished += SinglePartUnknownDownloader_OnDownloadFinished;
@@ -108,6 +111,7 @@ namespace Sonic.Downloader
         {
             multiPartDownloader = new MultiPartDownloader(File);
             multiPartDownloader.File = File;
+            multiPartDownloader.Timeout = Timeout;
             //MultiDownloader Set Association
             multiPartDownloader.OnDownloadStarted += MultiPartDownloader_OnDownloadStarted;
             multiPartDownloader.OnProgress += MultiPartDownloader_OnProgress;

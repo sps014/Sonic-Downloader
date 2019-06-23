@@ -83,7 +83,6 @@
             this.MinimizeBox = false;
             this.Name = "AddURLWindow";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.Text = "Add URL";
             this.Activated += new System.EventHandler(this.AddURLWindow_Activated);
             this.ResumeLayout(false);

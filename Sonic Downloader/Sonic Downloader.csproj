@@ -56,6 +56,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RangeProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RangeProgressBar.Designer.cs">
+      <DependentUpon>RangeProgressBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sonic\Downloader\Downloadable.cs" />
     <Compile Include="Sonic\Downloader\DownloadEventsArgs.cs" />
     <Compile Include="Sonic\Downloader\HeaderParser.cs" />

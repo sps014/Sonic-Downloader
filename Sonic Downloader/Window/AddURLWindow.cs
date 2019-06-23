@@ -13,17 +13,32 @@ namespace Sonic_Downloader.Window
 {
     public partial class AddURLWindow : Form
     {
-        public string URL { get; private set; }
+        private string url;
+        public string URL
+        {
+            get
+            {
+                return url;
+            }
+            set
+            {
+                url = value;
+                textBox1.Text = value;
+            }
+        }
         public AddURLWindow()
         {
             InitializeComponent();
         }
         private void CheckClipBoardForURL()
         {
-            string url=Clipboard.GetText();
-            if(UrlVerification.Verify(url))
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
-                textBox1.Text = url;
+                string url = Clipboard.GetText();
+                if (UrlVerification.Verify(url))
+                {
+                    textBox1.Text = url;
+                }
             }
         }
 

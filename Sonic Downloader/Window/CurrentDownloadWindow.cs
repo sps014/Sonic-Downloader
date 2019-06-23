@@ -1,5 +1,6 @@
 ﻿using Sonic.Downloader;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -46,6 +47,8 @@ namespace Sonic_Downloader.Window
             label14.Text = "No";
             Text = downloader.File.FileName;
 
+            if (File.DownloadType!=DownloadTypes.MultiplePartResumable)
+                rangeProgressBar1.Visible = false;
 
             if (File.DownloadType != DownloadTypes.SinglePartUnknownSize)
             {
@@ -59,7 +62,11 @@ namespace Sonic_Downloader.Window
                 {
                     label14.Text = "Yes";
                     button1.Visible = true;
-
+                    if(rangeProgressBar1.Visible==false)
+                    rangeProgressBar1.Visible = true;
+                    if(File.RangeList!=null)
+                    rangeProgressBar1.Ranges = GetRangeEquivalent(File.RangeList);
+                    rangeProgressBar1.Invalidate();
                 }
                 else
                 {
@@ -73,6 +80,21 @@ namespace Sonic_Downloader.Window
                 label13.Text = "Undefined";
 
             }
+        }
+
+        private List<RangeProgressBar.Range> GetRangeEquivalent(List<Sonic.Downloader.Range> ranges)
+        {
+            List<RangeProgressBar.Range> list=new List<RangeProgressBar.Range>();
+            foreach(Range r in ranges)
+            {
+                RangeProgressBar.Range rn = new RangeProgressBar.Range();
+                rn.Start = r.Start;
+                rn.End = r.End;
+                rn.Downloaded = r.Downloaded;
+
+                list.Add(rn);
+            }
+            return list;
         }
 
         private void Button2_Click(object sender, EventArgs e)

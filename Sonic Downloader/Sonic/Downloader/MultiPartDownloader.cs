@@ -190,6 +190,7 @@ namespace Sonic.Downloader
                 e.ResultType = FinishedEventArgs.Result.Unsuccessful;
 
             e.File = File;
+            e.RangeList = e.File.RangeList;
 
             OnDownloadFinished?.Invoke(this, e);
         }

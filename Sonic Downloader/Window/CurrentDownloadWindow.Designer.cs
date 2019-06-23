@@ -45,6 +45,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.rangeProgressBar1 = new Sonic_Downloader.RangeProgressBar();
             this.SuspendLayout();
             // 
             // label2
@@ -229,12 +230,23 @@
             this.textBox1.Size = new System.Drawing.Size(694, 31);
             this.textBox1.TabIndex = 22;
             // 
+            // rangeProgressBar1
+            // 
+            this.rangeProgressBar1.BackColor = System.Drawing.Color.White;
+            this.rangeProgressBar1.Location = new System.Drawing.Point(16, 377);
+            this.rangeProgressBar1.Name = "rangeProgressBar1";
+            this.rangeProgressBar1.RangeColor = System.Drawing.Color.DodgerBlue;
+            this.rangeProgressBar1.Size = new System.Drawing.Size(808, 23);
+            this.rangeProgressBar1.TabIndex = 23;
+            this.rangeProgressBar1.Text = "rangeProgressBar1";
+            // 
             // CurrentDownloadWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(845, 386);
+            this.ClientSize = new System.Drawing.Size(846, 422);
+            this.Controls.Add(this.rangeProgressBar1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label13);
@@ -282,5 +294,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox textBox1;
+        private RangeProgressBar rangeProgressBar1;
     }
 }

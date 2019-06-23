@@ -30,6 +30,7 @@ namespace Sonic_Downloader
             {
                 MainForm = new Form1();
                 SingleInstanceApplication.Run(MainForm, NewInstanceHandler);
+                MainForm.notifyIcon1.Visible = false;
                 MainForm.Close();
             }
         }

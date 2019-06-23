@@ -24,7 +24,7 @@ namespace Sonic_Downloader
             set
             {
                 startupArgs = value;
-                MessageBox.Show(startupArgs.ToString());
+                AddURL(startupArgs);
             }
         }
 
@@ -33,13 +33,15 @@ namespace Sonic_Downloader
             InitializeComponent();
 
         }
-        private void AddURL()
+        private void AddURL(string URL=null)
         {
             AddURLWindow auw = new AddURLWindow();
+            if (URL != null)
+                auw.URL = URL;
             DialogResult res = auw.ShowDialog();
             if (res == DialogResult.OK)
             {
-                Downloadable file = new Downloadable() { URL = auw.URL };
+                Downloadable file = new Downloadable() { URL = auw.URL ,DegreeOfParallelism=(uint)SettingsWindow.GeneralSettings.MaxConnection};
                 HeaderParser parser = new HeaderParser(file);
                 parser.OnParseSuccess += Parser_OnParseSuccess;
                 parser.OnError += Down_OnError;
@@ -58,7 +60,29 @@ namespace Sonic_Downloader
                 DownloaderList[ind].Download();
             }
         }
+        void Rename()
+        {
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                Downloader d = DownloaderList[ind];
+                SaveFileDialog sf = new SaveFileDialog();
+                sf.Filter = "All Files|*.*";
 
+                if (sf.ShowDialog() == DialogResult.OK)
+                {
+                    if (File.Exists(d.File.FullFilePath))
+                    {
+                        File.Move(d.File.FilePath, sf.FileName);
+
+                        d.File.FileName = System.IO.Path.GetFileName(sf.FileName);
+                        d.File.FilePath = System.IO.Path.GetDirectoryName(sf.FileName);
+                    }
+                }
+            }
+        }
         private int GetDuplicateDownloaderIndex(string url)
         {
             int res = -1;
@@ -169,6 +193,8 @@ namespace Sonic_Downloader
             foreach (Downloadable d in list)
             {
                 Downloader down = new Downloader(d);
+                down.Timeout = SettingsWindow.GeneralSettings.Timeout;
+
                 down.OnProgress += Downloader_OnProgress;
                 down.OnDownloadFinished += Downloader_OnProgress;
                 down.OnError += Down_OnError;
@@ -241,7 +267,7 @@ namespace Sonic_Downloader
             int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
             if (ind >= 0)
             {
-                Downloadable file = new Downloadable() { URL = DownloaderList[ind].File.URL };
+                Downloadable file = new Downloadable() { URL = DownloaderList[ind].File.URL,DegreeOfParallelism=(uint)SettingsWindow.GeneralSettings.MaxConnection };
                 DownloaderList.Remove(DownloaderList[ind]);
                 HeaderParser parser = new HeaderParser(file);
                 parser.OnParseSuccess += parser_Redownload;
@@ -252,7 +278,7 @@ namespace Sonic_Downloader
         private void ReDownload(Downloader d)
         {
 
-            Downloadable file = new Downloadable() { URL = d.File.URL };
+            Downloadable file = new Downloadable() { URL = d.File.URL, DegreeOfParallelism = (uint)SettingsWindow.GeneralSettings.MaxConnection };
             DownloaderList.Remove(d);
             HeaderParser parser = new HeaderParser(file);
             parser.OnParseSuccess += parser_Redownload;
@@ -308,6 +334,12 @@ namespace Sonic_Downloader
                 MessageBox.Show("Directory is no longer available there", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
+        private void ShowSettingsWindow()
+        {
+            SettingsWindow sw = new SettingsWindow();
+            sw.ShowDialog();
+        }
         private void AddURLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddURL();
@@ -337,6 +369,7 @@ namespace Sonic_Downloader
                     File.FilePath = dnw.FilePath;
 
                     Downloader downloader = new Downloader();
+                    downloader.Timeout = SettingsWindow.GeneralSettings.Timeout;
                     downloader.File = File;
                     downloader.OnProgress += Downloader_OnProgress;
                     downloader.OnDownloadFinished += Downloader_OnProgress;
@@ -364,6 +397,7 @@ namespace Sonic_Downloader
             Invoke((MethodInvoker)delegate ()
             {
                 Downloader downloader = new Downloader(file);
+                downloader.Timeout = SettingsWindow.GeneralSettings.Timeout;
                 downloader.OnError += Down_OnError;
                 downloader.OnDownloadFinished += Downloader_OnProgress;
                 downloader.OnProgress += Downloader_OnProgress;
@@ -410,6 +444,8 @@ namespace Sonic_Downloader
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadSettings();
+          
+            SettingsWindow.LoadSettings();
         }
 
 
@@ -553,35 +589,15 @@ namespace Sonic_Downloader
         {
             Remove();
         }
-
+  
         private void MoveRenameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.Rows.Count <= 0)
-                return;
-            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
-            if (ind >= 0)
-            {
-                Downloader d = DownloaderList[ind];
-                SaveFileDialog sf = new SaveFileDialog();
-                sf.Filter = "All Files|*.*";
-
-                if(sf.ShowDialog()==DialogResult.OK)
-                {
-                    if (File.Exists(d.File.FullFilePath))
-                    {
-                        File.Move(d.File.FilePath, sf.FileName);
-
-                        d.File.FileName = System.IO.Path.GetFileName(sf.FileName);
-                        d.File.FilePath = System.IO.Path.GetDirectoryName(sf.FileName);
-                    }
-                }
-            }
+            Rename();
         }
 
         private void ToolStripButton5_Click(object sender, EventArgs e)
         {
-            SettingsWindow sw = new SettingsWindow();
-            sw.ShowDialog();
+            ShowSettingsWindow();
         }
 
         private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -608,6 +624,11 @@ namespace Sonic_Downloader
         {
             await Task.Delay(10000);
             isFinalCloseRequested = false;
+        }
+
+        private void OptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowSettingsWindow();
         }
     }
 }
