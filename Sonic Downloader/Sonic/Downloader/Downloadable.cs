@@ -16,7 +16,7 @@ namespace Sonic.Downloader
         public double Percent => Downloaded * 100.0f / Size;
 
         public string FileName { get; set; } = "";
-        public string FilePath { get; set; } = @"C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug";
+        public string FilePath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
 
         public string FullFilePath => System.IO.Path.Combine(FilePath, FileName);
 
@@ -30,6 +30,8 @@ namespace Sonic.Downloader
         public bool Completed => DownloadType != DownloadTypes.SinglePartUnknownSize ? (Downloaded >= Size ? true : false ): true;
 
         public DownloadTypes DownloadType { get; set; }
+
+        public string ContentType { get; set; }
 
     }
     public enum DownloadTypes

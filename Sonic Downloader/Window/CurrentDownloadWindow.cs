@@ -40,12 +40,17 @@ namespace Sonic_Downloader.Window
 
         public void UpdateProgress(Downloadable File)
         {
+            if (File.Completed)
+                Close();
+
             textBox1.Text = File.URL;
             label9.Text = downloader.DownloadStatus.ToString();
             label11.Text = NetworkHelper.DataFormatter(File.Downloaded)+"  ( "+File.Percent.ToString("0.00")+"% )";
             label12.Text = NetworkHelper.DataFormatter(File.TransferRate) + "/Sec";
             label14.Text = "No";
             Text = downloader.File.FileName;
+
+
 
             if (File.DownloadType!=DownloadTypes.MultiplePartResumable)
                 rangeProgressBar1.Visible = false;

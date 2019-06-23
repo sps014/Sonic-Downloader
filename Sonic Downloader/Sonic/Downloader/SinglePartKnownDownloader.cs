@@ -80,6 +80,9 @@ namespace Sonic.Downloader
                         //read web response stream
                         read = ress.Read(data, 0, data.Length);
 
+                        if (read == 0)
+                            break;
+
                         //update total download 
                         totalRead += read;
 

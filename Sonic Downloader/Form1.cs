@@ -41,7 +41,11 @@ namespace Sonic_Downloader
             DialogResult res = auw.ShowDialog();
             if (res == DialogResult.OK)
             {
-                Downloadable file = new Downloadable() { URL = auw.URL ,DegreeOfParallelism=(uint)SettingsWindow.GeneralSettings.MaxConnection};
+                Downloadable file = new Downloadable() {
+                URL = auw.URL,
+                DegreeOfParallelism=(uint)SettingsWindow.GeneralSettings.MaxConnection,
+                FilePath=SettingsWindow.GeneralSettings.StoragePath
+                };
                 HeaderParser parser = new HeaderParser(file);
                 parser.OnParseSuccess += Parser_OnParseSuccess;
                 parser.OnError += Down_OnError;
@@ -267,7 +271,11 @@ namespace Sonic_Downloader
             int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
             if (ind >= 0)
             {
-                Downloadable file = new Downloadable() { URL = DownloaderList[ind].File.URL,DegreeOfParallelism=(uint)SettingsWindow.GeneralSettings.MaxConnection };
+                Downloadable file = new Downloadable()
+                { URL = DownloaderList[ind].File.URL,
+                    DegreeOfParallelism =(uint)SettingsWindow.GeneralSettings.MaxConnection,
+                    FilePath = SettingsWindow.GeneralSettings.StoragePath
+                };
                 DownloaderList.Remove(DownloaderList[ind]);
                 HeaderParser parser = new HeaderParser(file);
                 parser.OnParseSuccess += parser_Redownload;
@@ -278,7 +286,11 @@ namespace Sonic_Downloader
         private void ReDownload(Downloader d)
         {
 
-            Downloadable file = new Downloadable() { URL = d.File.URL, DegreeOfParallelism = (uint)SettingsWindow.GeneralSettings.MaxConnection };
+            Downloadable file = new Downloadable() {
+                URL = d.File.URL,
+                DegreeOfParallelism = (uint)SettingsWindow.GeneralSettings.MaxConnection,
+                FilePath = SettingsWindow.GeneralSettings.StoragePath
+            };
             DownloaderList.Remove(d);
             HeaderParser parser = new HeaderParser(file);
             parser.OnParseSuccess += parser_Redownload;
@@ -436,9 +448,19 @@ namespace Sonic_Downloader
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-            if(!isFinalCloseRequested)
-            e.Cancel = true;
-            MinimizeToTray();
+            if (!isFinalCloseRequested)
+            {
+                
+                e.Cancel = true;
+                MinimizeToTray();
+
+            }
+            else
+            {
+                notifyIcon1.Visible = false;
+                notifyIcon1.Icon = null;
+                notifyIcon1.Dispose();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -629,6 +651,18 @@ namespace Sonic_Downloader
         private void OptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowSettingsWindow();
+        }
+
+        private void BugReporterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string command = "mailto:sonic.dev.contact@gmail.com?subject=Sonic Downloader (bug) &body=Kindly write the 'URL' where bug was found and 'Description'\n\n ";
+            Process.Start(command);
+        }
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutWindow aw = new AboutWindow();
+            aw.ShowDialog();
         }
     }
 }

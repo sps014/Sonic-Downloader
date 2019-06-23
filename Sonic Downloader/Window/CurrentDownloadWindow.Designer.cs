@@ -233,10 +233,10 @@
             // rangeProgressBar1
             // 
             this.rangeProgressBar1.BackColor = System.Drawing.Color.White;
-            this.rangeProgressBar1.Location = new System.Drawing.Point(16, 377);
+            this.rangeProgressBar1.Location = new System.Drawing.Point(8, 377);
             this.rangeProgressBar1.Name = "rangeProgressBar1";
-            this.rangeProgressBar1.RangeColor = System.Drawing.Color.DodgerBlue;
-            this.rangeProgressBar1.Size = new System.Drawing.Size(808, 23);
+            this.rangeProgressBar1.RangeColor = System.Drawing.Color.Crimson;
+            this.rangeProgressBar1.Size = new System.Drawing.Size(826, 23);
             this.rangeProgressBar1.TabIndex = 23;
             this.rangeProgressBar1.Text = "rangeProgressBar1";
             // 

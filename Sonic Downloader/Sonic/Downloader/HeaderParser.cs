@@ -10,6 +10,7 @@ namespace Sonic.Downloader
     public class HeaderParser
     {
         Downloadable File { get; set; }
+        private string MimeType=null;
 
         public HeaderParser(Downloadable File=null)
         {
@@ -79,14 +80,26 @@ namespace Sonic.Downloader
                 //Get File Name From Server from content disposition
                 SetFileName(response);
 
+
                 //Get File Type From Server
                 SetFileType((HttpWebResponse)response);
 
                 //Verify Status Code
                 VerifyStatus(response as HttpWebResponse);
+
+                //set content type
+                GetContentType(response);
             }
         }
 
+        private void GetContentType(WebResponse response)
+        {
+            if(response.ContentType!=null)
+            {
+                string parts=response.ContentType.Split(';')[0];
+                MimeType = parts;
+            }
+        }
         private void VerifyStatus(HttpWebResponse response)
         {
             if((int)(response.StatusCode)/100!=2)
@@ -158,14 +171,30 @@ namespace Sonic.Downloader
         }
         private void ExplicitFileName()
         {
+            var ext = new MimeToExtension();
+            string mapValue;
+            ext.mimeToExtMap.TryGetValue(MimeType, out mapValue);
+
+            if (mapValue != null)
+            {
+                File.ContentType = mapValue;
+
+                if (mapValue == ".html")
+                    OnError?.Invoke(this, new Exception("Given URL seems to be a webpage ."));
+            }
 
             if (!string.IsNullOrWhiteSpace(File.FileName))
                 return;
 
+
             Uri uri = new Uri(File.URL);
             string FileNameEncoded = uri.Segments.Last();
             File.FileName = WebUtility.UrlDecode(FileNameEncoded);
-
+            if(File.FileName.IndexOf('.')<=0)
+            {
+                if (File.ContentType != null)
+                    File.FileName += File.ContentType;
+            }
   
         }
 

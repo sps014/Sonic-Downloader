@@ -49,6 +49,8 @@ namespace Sonic_Downloader.Window
                     break;
             }
             numericUpDown1.Value = GeneralSettings.Timeout;
+            textBox1.Text = GeneralSettings.StoragePath;
+
         }
         private void SettingsWindow_Load(object sender, EventArgs e)
         {
@@ -81,6 +83,14 @@ namespace Sonic_Downloader.Window
         private void SettingsWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if(folderBrowserDialog1.ShowDialog()==DialogResult.OK)
+            {
+                textBox1.Text=GeneralSettings.StoragePath = folderBrowserDialog1.SelectedPath;
+            }
         }
     }
 }
