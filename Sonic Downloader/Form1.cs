@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Sonic_Downloader
@@ -12,81 +13,58 @@ namespace Sonic_Downloader
     {
 
         public List<Downloader> DownloaderList = new List<Downloader>();
+
+        private string startupArgs="";
+        public string StartupArgs
+        {
+            get
+            {
+                return startupArgs;
+            }
+            set
+            {
+                startupArgs = value;
+                MessageBox.Show(startupArgs.ToString());
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
-        }
 
-        private void AddURLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddURL();
         }
-        private void ToolStripButton1_Click(object sender, EventArgs e)
-        {
-            AddURL();
-        }
-
         private void AddURL()
         {
             AddURLWindow auw = new AddURLWindow();
-            DialogResult res=auw.ShowDialog();
-            if(res==DialogResult.OK)
+            DialogResult res = auw.ShowDialog();
+            if (res == DialogResult.OK)
             {
                 Downloadable file = new Downloadable() { URL = auw.URL };
                 HeaderParser parser = new HeaderParser(file);
                 parser.OnParseSuccess += Parser_OnParseSuccess;
                 parser.OnError += Down_OnError;
-                parser.ParseHeader();            
+                parser.ParseHeader();
             }
         }
 
-        private void Parser_OnParseSuccess(object sender, Downloadable File)
+        void Resume()
         {
-            Invoke((MethodInvoker)delegate ()
-            {
-            if (isDownloadURLDuplicate(File.URL) == -1)
-            {
-                DownloadNowWindow dnw = new DownloadNowWindow();
-                dnw.URL = File.URL;
-                dnw.FullFilePath = File.FullFilePath;
-                dnw.FileName = File.FileName;
-                dnw.FilePath = File.FilePath;
-                dnw.FileSize = File.Size;
-                var res = dnw.ShowDialog();
-                if (res == DialogResult.OK)
-                {
-                    File.FileName = dnw.FileName;
-                    File.FilePath = dnw.FilePath;
 
-                    Downloader downloader = new Downloader();
-                    downloader.File = File;
-                    downloader.OnProgress += Downloader_OnProgress;
-                    downloader.OnDownloadFinished += Downloader_OnProgress;
-                    downloader.OnError += Down_OnError;
-                    DownloaderList.Add(downloader);
-                    downloader.Download();
-                }
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                DownloaderList[ind].Download();
             }
-            else
-            {
-                var r = MessageBox.Show("Download File Already added , Do you want to over write it", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                switch (r)
-                {
-                    case DialogResult.Yes:
-                        ReDownload(DownloaderList[isDownloadURLDuplicate(File.URL)]);
-                            break;
-
-                    }
-                }
-            });
-            
         }
-        private int isDownloadURLDuplicate(string url)
+
+        private int GetDuplicateDownloaderIndex(string url)
         {
             int res = -1;
 
             int j = 0;
-            foreach(Downloader d in DownloaderList)
+            foreach (Downloader d in DownloaderList)
             {
                 if (d.File.URL == url)
                     return j;
@@ -94,39 +72,11 @@ namespace Sonic_Downloader
             }
             return res;
         }
-        private void Downloader_OnProgress(object sender, ProgressEventArgs e)
-        {
-            Invoke((MethodInvoker)delegate ()
-            {
-                UpdateChangesInGrid();
-                ToggleButtons(sender as Downloader);
-                var downloader = sender as Downloader;
-                if (downloader.File.Completed)
-                {
-                    var res = MessageBox.Show("File Downloaded Successfully Do you wish to open.", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                    if (res == DialogResult.Yes)
-                    {
-                        if (File.Exists(downloader.File.FullFilePath))
-                        {
-                            string cmd = "explorer.exe";
-                            string args = "/select, " + downloader.File.FullFilePath;
-                            Process.Start(cmd, args);
-                        }
-                        else
-                        {
-                            MessageBox.Show("File is no longer available there", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-
-                    }
-                }
-            });
-        }
-
         private void UpdateChangesInGrid()
         {
             int selectionIndex = -1;
-            if(dataGridView1.Rows.Count>0)
-             selectionIndex = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (dataGridView1.Rows.Count > 0)
+                selectionIndex = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
 
             dataGridView1.Columns.Clear();
             dataGridView1.AutoGenerateColumns = false;
@@ -182,70 +132,28 @@ namespace Sonic_Downloader
                 };
                 dataGridView1.Rows.Add(rows);
             }
-            if(selectionIndex>=0)
+            if (selectionIndex >= 0)
             {
-                if(dataGridView1.Rows.Count>selectionIndex)
+                if (dataGridView1.Rows.Count > selectionIndex)
                 {
-                    dataGridView1.Rows[selectionIndex].Selected=true;
+                    dataGridView1.Rows[selectionIndex].Selected = true;
                 }
             }
 
         }
 
-        private void DataGridView1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (dataGridView1.Rows.Count <= 0)
-                return;
-            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
-            if (ind >= 0)
-            {
-                ToggleButtons(DownloaderList[ind]);
-
-                if (DownloaderList[ind].DownloadStatus == Downloader.Status.Downloading)
-                {
-                    CurrentDownloadWindow cdw = new CurrentDownloadWindow();
-                    cdw.Downloader = DownloaderList[ind];
-                    cdw.UpdateProgress(DownloaderList[ind].File);
-                    cdw.ShowDialog();
-                }
-                else
-                {
-                    FilePropertiesWindow fpw = new FilePropertiesWindow();
-                    fpw.Downloader = DownloaderList[ind];
-                    fpw.ShowDialog();
-                }
-            }
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveLoadFiles.DownloadableConfigPath="files.json";
-            SaveLoadFiles.SaveFiles(FromDownloader());
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void SaveSettings()
         {
             SaveLoadFiles.DownloadableConfigPath = "files.json";
-            var files =SaveLoadFiles.LoadFiles();
+            SaveLoadFiles.SaveFiles(FromDownloader());
+        }
+        private void LoadSettings()
+        {
+            SaveLoadFiles.DownloadableConfigPath = "files.json";
+            var files = SaveLoadFiles.LoadFiles();
             if (files != null)
-                ToDownloader(files); 
+                ToDownloader(files);
             UpdateChangesInGrid();
-        }
-
-        private void ResumeToolStrip_Click(object sender, EventArgs e)
-        {
-            Resume();
-        }
-        void Resume()
-        {
-
-            if (dataGridView1.Rows.Count <= 0)
-                return;
-            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
-            if (ind >= 0)
-            {
-                DownloaderList[ind].Download();
-            }
         }
         List<Downloadable> FromDownloader()
         {
@@ -268,26 +176,9 @@ namespace Sonic_Downloader
             }
 
         }
-
-        private void Down_OnError(object sender, Exception e)
-        {
-            MessageBox.Show(e.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        private void DataGridView1_SelectionChanged(object sender, EventArgs e)
-        {
-
-            if (dataGridView1.SelectedRows.Count>0)
-            {
-                int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
-
-                Downloader selDown = DownloaderList[ind];
-                ToggleButtons(selDown);
-            }
-        }
         private void ToggleButtons(Downloader downloader)
         {
-            if(dataGridView1.Rows.Count<=0)
+            if (dataGridView1.Rows.Count <= 0)
             {
                 return;
             }
@@ -298,19 +189,33 @@ namespace Sonic_Downloader
                 stopToolStrip.Enabled = false;
                 downloadNowToolStripMenuItem.Enabled = false;
                 stopToolStripMenuItem.Enabled = false;
+                openFolderToolStripMenuItem.Enabled = true;
+                openToolStripMenuItem.Enabled = true;
+                resumeToolStripMenuItem.Enabled = false;
+                stopToolStripMenuItem1.Enabled = false;
+                moveRenameToolStripMenuItem.Enabled = true;
             }
             else
             {
+                openFolderToolStripMenuItem.Enabled = false;
+                openToolStripMenuItem.Enabled = false;
+
                 if (downloader.DownloadStatus == Downloader.Status.Downloading)
                 {
                     stopToolStrip.Enabled = true;
                     resumeToolStrip.Enabled = false;
                     downloadNowToolStripMenuItem.Enabled = false;
+                    moveRenameToolStripMenuItem.Enabled = false;
                     stopToolStripMenuItem.Enabled = true;
+                    stopToolStripMenuItem1.Enabled = true;
+                    resumeToolStripMenuItem.Enabled = false;
                 }
                 else
                 {
                     resumeToolStrip.Enabled = true;
+                    resumeToolStripMenuItem.Enabled = true;
+                    stopToolStripMenuItem1.Enabled = false;
+                    moveRenameToolStripMenuItem.Enabled = true;
                     downloadNowToolStripMenuItem.Enabled = true;
                     stopToolStrip.Enabled = false;
                     stopToolStripMenuItem.Enabled = false;
@@ -354,46 +259,6 @@ namespace Sonic_Downloader
             parser.OnError += Down_OnError;
             parser.ParseHeader();
         }
-        void parser_Redownload(object sender,Downloadable file)
-        {
-            Invoke((MethodInvoker)delegate ()
-            {
-                Downloader downloader = new Downloader(file);
-                downloader.OnError += Down_OnError;
-                downloader.OnDownloadFinished += Downloader_OnProgress;
-                downloader.OnProgress += Downloader_OnProgress;
-                DownloaderList.Add(downloader);
-                downloader.Download();
-                UpdateChangesInGrid();
-            });
-            
-        }
-        private void StopToolStrip_Click(object sender, EventArgs e)
-        {
-            Pause();
-        }
-
-        private void DataGridView1_Click(object sender, EventArgs e)
-        {
-            if (dataGridView1.Rows.Count <= 0)
-                return;
-            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
-            if (ind >= 0)
-            {
-                ToggleButtons(DownloaderList[ind]);
-               
-            }
-        }
-
-        private void DownloadNowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Resume();
-        }
-
-        private void StopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Pause();
-        }
         private void Remove()
         {
             if (dataGridView1.Rows.Count <= 0)
@@ -401,8 +266,8 @@ namespace Sonic_Downloader
             int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
             if (ind >= 0)
             {
-                var res=MessageBox.Show($"Do you want to remove downloaded file {DownloaderList[ind].File.FileName} as well from disk.", "Warning", MessageBoxButtons.YesNoCancel,MessageBoxIcon.Question);
-                switch(res)
+                var res = MessageBox.Show($"Do you want to remove downloaded file {DownloaderList[ind].File.FileName} as well from disk.", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                switch (res)
                 {
                     case DialogResult.Yes:
                         NetworkHelper.DeleteFile(DownloaderList[ind].File.FullFilePath);
@@ -416,6 +281,209 @@ namespace Sonic_Downloader
                 UpdateChangesInGrid();
 
             }
+        }
+        private void OpenExplorerFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                string cmd = "explorer.exe";
+                string args = "/select, " + path;
+                Process.Start(cmd, args);
+            }
+            else
+            {
+                MessageBox.Show("File is no longer available there", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+        private void OpenExplorerFolder(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                string cmd = "explorer.exe";
+                string args = "/select, " + path;
+                Process.Start(cmd, args);
+            }
+            else
+            {
+                MessageBox.Show("Directory is no longer available there", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+        private void AddURLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddURL();
+        }
+        private void ToolStripButton1_Click(object sender, EventArgs e)
+        {
+            AddURL();
+        }
+
+
+        private void Parser_OnParseSuccess(object sender, Downloadable File)
+        {
+            Invoke((MethodInvoker)delegate ()
+            {
+            if (GetDuplicateDownloaderIndex(File.URL) == -1)
+            {
+                DownloadNowWindow dnw = new DownloadNowWindow();
+                dnw.URL = File.URL;
+                dnw.FullFilePath = File.FullFilePath;
+                dnw.FileName = File.FileName;
+                dnw.FilePath = File.FilePath;
+                dnw.FileSize = File.Size;
+                var res = dnw.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    File.FileName = dnw.FileName;
+                    File.FilePath = dnw.FilePath;
+
+                    Downloader downloader = new Downloader();
+                    downloader.File = File;
+                    downloader.OnProgress += Downloader_OnProgress;
+                    downloader.OnDownloadFinished += Downloader_OnProgress;
+                    downloader.OnError += Down_OnError;
+                    DownloaderList.Add(downloader);
+                    downloader.Download();
+                }
+            }
+            else
+            {
+                var r = MessageBox.Show("Download File Already added , Do you want to over write it", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                switch (r)
+                {
+                    case DialogResult.Yes:
+                        ReDownload(DownloaderList[GetDuplicateDownloaderIndex(File.URL)]);
+                            break;
+
+                    }
+                }
+            });
+            
+        }
+        private void parser_Redownload(object sender, Downloadable file)
+        {
+            Invoke((MethodInvoker)delegate ()
+            {
+                Downloader downloader = new Downloader(file);
+                downloader.OnError += Down_OnError;
+                downloader.OnDownloadFinished += Downloader_OnProgress;
+                downloader.OnProgress += Downloader_OnProgress;
+                DownloaderList.Add(downloader);
+                downloader.Download();
+                UpdateChangesInGrid();
+            });
+
+        }
+
+        private void Downloader_OnProgress(object sender, ProgressEventArgs e)
+        {
+            Invoke((MethodInvoker)delegate ()
+            {
+                UpdateChangesInGrid();
+                ToggleButtons(sender as Downloader);
+                var downloader = sender as Downloader;
+                if (downloader.File.Completed)
+                {
+                    var res = MessageBox.Show("File Downloaded Successfully Do you wish to open.", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (res == DialogResult.Yes)
+                    {
+                        OpenExplorerFile(downloader.File.FullFilePath);
+
+                    }
+                }
+            });
+        }
+        private void Down_OnError(object sender, Exception e)
+        {
+            MessageBox.Show(e.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+            if(!isFinalCloseRequested)
+            e.Cancel = true;
+            MinimizeToTray();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            LoadSettings();
+        }
+
+
+        private void DataGridView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                ToggleButtons(DownloaderList[ind]);
+
+                if (DownloaderList[ind].DownloadStatus == Downloader.Status.Downloading)
+                {
+                    CurrentDownloadWindow cdw = new CurrentDownloadWindow();
+                    cdw.Downloader = DownloaderList[ind];
+                    cdw.UpdateProgress(DownloaderList[ind].File);
+                    cdw.ShowDialog();
+                }
+                else
+                {
+                    FilePropertiesWindow fpw = new FilePropertiesWindow();
+                    fpw.Downloader = DownloaderList[ind];
+                    fpw.ShowDialog();
+                }
+            }
+        }
+
+
+        private void DataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+
+                Downloader selDown = DownloaderList[ind];
+                ToggleButtons(selDown);
+            }
+        }
+
+        private void DataGridView1_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                ToggleButtons(DownloaderList[ind]);
+
+            }
+        }
+
+
+        private void ResumeToolStrip_Click(object sender, EventArgs e)
+        {
+            Resume();
+        }
+
+
+        private void StopToolStrip_Click(object sender, EventArgs e)
+        {
+            Pause();
+        }
+
+
+        private void DownloadNowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Resume();
+        }
+
+        private void StopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Pause();
         }
 
         private void RemoveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -435,7 +503,111 @@ namespace Sonic_Downloader
 
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close();
+            MinimizeToTray();
+        }
+        private void MinimizeToTray()
+        {
+            Hide();
+            notifyIcon1.Visible = true;
+        }
+
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                OpenExplorerFile(DownloaderList[ind].File.FullFilePath);
+            }
+        }
+
+
+        private void OpenFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                OpenExplorerFolder(DownloaderList[ind].File.FilePath);
+            }
+        }
+
+        private void RedownloadToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ReDownload();
+        }
+
+        private void ResumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Resume();
+        }
+
+        private void StopToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Pause();
+        }
+
+        private void RemoveToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Remove();
+        }
+
+        private void MoveRenameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count <= 0)
+                return;
+            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0)
+            {
+                Downloader d = DownloaderList[ind];
+                SaveFileDialog sf = new SaveFileDialog();
+                sf.Filter = "All Files|*.*";
+
+                if(sf.ShowDialog()==DialogResult.OK)
+                {
+                    if (File.Exists(d.File.FullFilePath))
+                    {
+                        File.Move(d.File.FilePath, sf.FileName);
+
+                        d.File.FileName = System.IO.Path.GetFileName(sf.FileName);
+                        d.File.FilePath = System.IO.Path.GetDirectoryName(sf.FileName);
+                    }
+                }
+            }
+        }
+
+        private void ToolStripButton5_Click(object sender, EventArgs e)
+        {
+            SettingsWindow sw = new SettingsWindow();
+            sw.ShowDialog();
+        }
+
+        private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Show();
+        }
+
+        private void SonicDownloaderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Show();
+        }
+
+        private void CloseToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        bool isFinalCloseRequested = false;
+        private void CloseToolStripMenuItem1_MouseDown(object sender, MouseEventArgs e)
+        {
+            isFinalCloseRequested = true;
+        }
+
+        private async void CloseToolStripMenuItem1_MouseUp(object sender, MouseEventArgs e)
+        {
+            await Task.Delay(10000);
+            isFinalCloseRequested = false;
         }
     }
 }
