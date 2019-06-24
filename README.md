@@ -3,6 +3,8 @@ Multi threaded downloader , it is faster than few  paid Download Managers out th
 It does not require time taking merging process of temporary files.
 Parallel requests are made to download a given file.
 
+![pic](https://user-images.githubusercontent.com/45932883/60001776-d5e64c00-9684-11e9-9ba0-b984fc344a43.png)
+
 ## Operations Available
 ##### 1. Start Download
 ##### 2. Pause Download
