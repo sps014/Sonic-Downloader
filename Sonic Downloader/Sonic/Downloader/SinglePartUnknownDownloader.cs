@@ -25,14 +25,16 @@ namespace Sonic.Downloader
 
         public void SingleDownload()
         {
-            NetworkHelper.DeleteFile(File.FileName);
+            NetworkHelper.DeleteFile(File.FullFilePath);
 
             //reset Download Amount and Get New Token for A new Task
             File.Downloaded = 0;
             token = new CancellationTokenSource();
 
-
-            StartDownload();
+            Task.Run(() =>
+            {
+                StartDownload();
+            });
         }
 
         public void StopSingle()
@@ -44,8 +46,11 @@ namespace Sonic.Downloader
         {
             string tempFile = File.FullFilePath;
 
+            if (!Directory.Exists(File.FilePath))
+                Directory.CreateDirectory(File.FilePath);
+
             //cretae file stream from temp file in write append mode
-            FileStream writer = new FileStream(tempFile, FileMode.Append);
+            FileStream writer = new FileStream(tempFile, FileMode.Create);
 
             HttpWebRequest req = WebRequest.Create(File.URL) as HttpWebRequest;
 
@@ -113,13 +118,14 @@ namespace Sonic.Downloader
                     }
                     while (read != 0);
 
-                    //Report that download finished
-                    ReportEnd();
                 }
 
             }
 
             writer.Close();
+
+            //Report that download finished
+            ReportEnd();
 
         }
         private void ReportStart()
@@ -133,6 +139,8 @@ namespace Sonic.Downloader
         {
             ProgressEventArgs args = new ProgressEventArgs();
             args.File = File;
+            args.File.Completed = false;
+
             OnProgress?.Invoke(this, args);
         }
         private void ReportEnd()
@@ -141,7 +149,7 @@ namespace Sonic.Downloader
             e.ResultType = FinishedEventArgs.Result.Success;
 
             e.File = File;
-
+            e.File.Completed=true;
             OnDownloadFinished?.Invoke(this, e);
         }
 

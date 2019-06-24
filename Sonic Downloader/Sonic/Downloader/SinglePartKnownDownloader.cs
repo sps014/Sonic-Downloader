@@ -27,15 +27,20 @@ namespace Sonic.Downloader
 
         public void SingleDownload()
         {
+            if (!Directory.Exists(File.FilePath))
+                Directory.CreateDirectory(File.FilePath);
 
             //Since File is non resumable delete previous parts
-            NetworkHelper.DeleteFile(File.FileName);
+            NetworkHelper.DeleteFile(File.FullFilePath);
 
             //reset Download Amount and Get New Token for A new Task
             File.Downloaded = 0;
             token = new CancellationTokenSource();
 
-            StartDownloading();
+            Task.Run(() =>
+            {
+                StartDownloading();
+            });
 
         }
         public void StartDownloading()
@@ -128,6 +133,7 @@ namespace Sonic.Downloader
         {
             ProgressEventArgs args = new ProgressEventArgs();
             args.File = File;
+            args.File.Completed = false;
             OnProgress?.Invoke(this, args);
         }
         private void ReportEnd()
@@ -140,6 +146,8 @@ namespace Sonic.Downloader
                 e.ResultType = FinishedEventArgs.Result.Unsuccessful;
 
             e.File = File;
+            if (e.File.Downloaded == e.File.Size)
+                e.File.Completed = true;
             OnDownloadFinished?.Invoke(this, e);
         }
     

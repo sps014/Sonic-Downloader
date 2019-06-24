@@ -41,24 +41,36 @@ namespace Sonic.Downloader
                 {
                     //Get File Size from server
                     SetFileSize();
+                }
+                catch (Exception)
+                {
+                 //To Do   
+                }
+             
+
+                try
+                {
 
                     //Get File Name And File Type web server
                     GetFilePropertiesFromServer();
-
-
-                    //Get explicit file Name
-                    ExplicitFileName();
-
-                    //Remove Illegal Character from file Name 
-                    RemoveIllegalCharFromName();
-
-                    //Inform User About Task Completition
-                    OnParseSuccess?.Invoke(this, this.File);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     OnError?.Invoke(this, e);
+                    return;
                 }
+
+
+                //Get explicit file Name
+                ExplicitFileName();
+
+                //Remove Illegal Character from file Name 
+                RemoveIllegalCharFromName();
+
+                //Inform User About Task Completition
+                OnParseSuccess?.Invoke(this, this.File);
+
+
             });
 
         }
@@ -71,12 +83,14 @@ namespace Sonic.Downloader
         private  void GetFilePropertiesFromServer()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(File.URL);
-            request.Method = "HEAD";
+            request.Method = "GET";
             request.Proxy = null;
-            request.AddRange(0);
+            request.AddRange(0,1);
 
-            using (var response= request.GetResponse())
+            using (var response = request.GetResponse())
             {
+
+
                 //Get File Name From Server from content disposition
                 SetFileName(response);
 

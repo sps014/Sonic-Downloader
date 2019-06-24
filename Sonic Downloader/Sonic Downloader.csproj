@@ -74,6 +74,11 @@
     <Compile Include="Sonic\Downloader\SinglePartKnownDownloader.cs" />
     <Compile Include="Sonic\Downloader\SinglePartUnknownDownloader.cs" />
     <Compile Include="Sonic\Downloader\UrlVerification.cs" />
+    <Compile Include="Sonic\HttpServer\SonicHttpServer.cs" />
+    <Compile Include="Sonic\HttpServer\SonicHTTPStatus.cs" />
+    <Compile Include="Sonic\HttpServer\SonicMIMETypes.cs" />
+    <Compile Include="Sonic\HttpServer\SonicRequest.cs" />
+    <Compile Include="Sonic\HttpServer\SonicResponse.cs" />
     <Compile Include="Window\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>

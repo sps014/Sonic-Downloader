@@ -30,6 +30,9 @@ namespace Sonic.Downloader
         }
         public void MultiDownload()
         {
+            if (!Directory.Exists(File.FilePath))
+                Directory.CreateDirectory(File.FilePath);
+
             token = new CancellationTokenSource();
             CheckIfFirstDownload();
             fileStream = new FileStream(File.FullFilePath, FileMode.OpenOrCreate,
@@ -177,7 +180,7 @@ namespace Sonic.Downloader
             args.RangeList = File.RangeList;
            
             args.File = File;
-
+            args.File.Completed=false;
             OnProgress?.Invoke(this, args);
         }
         private void ReportEnd()
@@ -191,6 +194,9 @@ namespace Sonic.Downloader
 
             e.File = File;
             e.RangeList = e.File.RangeList;
+
+            if(e.File.Downloaded==e.File.Size)
+            e.File.Completed = true;
 
             OnDownloadFinished?.Invoke(this, e);
         }

@@ -16,7 +16,7 @@ namespace Sonic.Downloader
         public double Percent => Downloaded * 100.0f / Size;
 
         public string FileName { get; set; } = "";
-        public string FilePath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+        public string FilePath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\Sonic Downloads";
 
         public string FullFilePath => System.IO.Path.Combine(FilePath, FileName);
 
@@ -27,7 +27,7 @@ namespace Sonic.Downloader
 
         public List<Range> RangeList { get; set; } = new List<Range>();
 
-        public bool Completed => DownloadType != DownloadTypes.SinglePartUnknownSize ? (Downloaded >= Size ? true : false ): true;
+        public bool Completed { get; set; }
 
         public DownloadTypes DownloadType { get; set; }
 

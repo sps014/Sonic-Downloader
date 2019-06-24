@@ -1,4 +1,5 @@
 ﻿using Sonic.Downloader;
+using Sonic.HttpServer;
 using Sonic_Downloader.Window;
 using System;
 using System.Collections.Generic;
@@ -264,18 +265,26 @@ namespace Sonic_Downloader
                 DownloaderList[ind].Pause();
             }
         }
-        private void ReDownload()
+        private void ReDownload(string directURL=null)
         {
-            if (dataGridView1.Rows.Count <= 0)
+            if (dataGridView1.Rows.Count <= 0 && directURL==null)
                 return;
-            int ind = dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
-            if (ind >= 0)
+
+            int ind = -1;
+            if(dataGridView1.Rows.Count>0)
+            ind=dataGridView1.Rows.IndexOf(dataGridView1.SelectedRows[0]);
+            if (ind >= 0 ||directURL!=null)
             {
+                if (ind >= 0)
+                    DownloaderList[ind].Pause();
+
                 Downloadable file = new Downloadable()
-                { URL = DownloaderList[ind].File.URL,
+                {
+                    URL = directURL==null?DownloaderList[ind].File.URL:directURL,
                     DegreeOfParallelism =(uint)SettingsWindow.GeneralSettings.MaxConnection,
                     FilePath = SettingsWindow.GeneralSettings.StoragePath
                 };
+                if(directURL==null)
                 DownloaderList.Remove(DownloaderList[ind]);
                 HeaderParser parser = new HeaderParser(file);
                 parser.OnParseSuccess += parser_Redownload;
@@ -468,8 +477,33 @@ namespace Sonic_Downloader
             LoadSettings();
           
             SettingsWindow.LoadSettings();
+
+            StartServer();
         }
 
+        void StartServer()
+        {
+            SonicHttpServer sonicHttpServer = new SonicHttpServer(9595);
+            sonicHttpServer.OnConnection += SonicHttpServer_OnConnection;
+            sonicHttpServer.Start(2);
+        }
+
+        private void SonicHttpServer_OnConnection(object sender, ConnectionEventArgs e)
+        {
+            string Url = e.Request.URL; 
+            e.Response.StatusCode = StatusCode.OK;
+            e.Response.End("Delivered=1");
+
+            if(Url[0]=='/')
+            {
+                Url= Url.Remove(0, 1);
+            }
+            if (Url.IndexOf("downFileUrl=")>=0)
+            {
+                Url = Url.Replace("downFileUrl=","");
+            }
+            AddURL(Url);
+        }
 
         private void DataGridView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {

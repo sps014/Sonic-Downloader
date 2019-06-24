@@ -29,6 +29,10 @@ namespace Sonic_Downloader.Window
         public AddURLWindow()
         {
             InitializeComponent();
+            TopMost = true;
+            Focus();
+            BringToFront();
+            TopMost = false;
         }
         private void CheckClipBoardForURL()
         {
