@@ -14,3 +14,9 @@ Parallel requests are made to download a given file.
 ##### 6. Download via Any external Application with Http request on Port 9595
 ##### 7. Report of Progress
 ##### 8. Youtube Downloader //Todo
+
+
+
+## Important Note
+Product is not yet finished and it will definately contain bugs.
+Todo Dynamic Segmentation will be implemented later , it is easy to entend library to support it
