@@ -281,8 +281,9 @@ namespace Sonic_Downloader
                 Downloadable file = new Downloadable()
                 {
                     URL = directURL==null?DownloaderList[ind].File.URL:directURL,
+                    FileName=FileName==null?DownloaderList[ind].File.FileName:FileName,
                     DegreeOfParallelism =(uint)SettingsWindow.GeneralSettings.MaxConnection,
-                    FilePath = SettingsWindow.GeneralSettings.StoragePath
+                    FilePath =SettingsWindow.GeneralSettings.StoragePath
                 };
                 if (FileName != null)
                     file.FileName = FileName;
