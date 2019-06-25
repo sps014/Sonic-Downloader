@@ -54,7 +54,19 @@ namespace Sonic.Downloader
         public void Pause()
         {
             token.Cancel(true);
+            CloseStream();
 
+        }
+        private void CloseStream()
+        {
+            try
+            {
+                fileStream.Close();
+            }
+            catch(Exception)
+            {
+
+            }
         }
         private void ParallelDownload()
         {

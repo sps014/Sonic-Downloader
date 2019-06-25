@@ -18,6 +18,8 @@ namespace Sonic_Downloader.Window
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 3;
+            textBox1.Text = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\Sonic Downloads";
+
         }
         void UpdateControls()
         {
@@ -50,6 +52,10 @@ namespace Sonic_Downloader.Window
             }
             numericUpDown1.Value = GeneralSettings.Timeout;
             textBox1.Text = GeneralSettings.StoragePath;
+            if(string.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                textBox1.Text = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads\\Sonic Downloads";
+            }
 
         }
         private void SettingsWindow_Load(object sender, EventArgs e)

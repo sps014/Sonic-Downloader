@@ -265,7 +265,7 @@ namespace Sonic_Downloader
                 DownloaderList[ind].Pause();
             }
         }
-        private void ReDownload(string directURL=null)
+        private void ReDownload(string directURL=null,string FileName=null)
         {
             if (dataGridView1.Rows.Count <= 0 && directURL==null)
                 return;
@@ -284,6 +284,9 @@ namespace Sonic_Downloader
                     DegreeOfParallelism =(uint)SettingsWindow.GeneralSettings.MaxConnection,
                     FilePath = SettingsWindow.GeneralSettings.StoragePath
                 };
+                if (FileName != null)
+                    file.FileName = FileName;
+
                 if(directURL==null)
                 DownloaderList.Remove(DownloaderList[ind]);
                 HeaderParser parser = new HeaderParser(file);
@@ -317,6 +320,7 @@ namespace Sonic_Downloader
                 switch (res)
                 {
                     case DialogResult.Yes:
+                        DownloaderList[ind].Pause();
                         NetworkHelper.DeleteFile(DownloaderList[ind].File.FullFilePath);
                         break;
                     case DialogResult.Cancel:
@@ -469,11 +473,14 @@ namespace Sonic_Downloader
                 notifyIcon1.Visible = false;
                 notifyIcon1.Icon = null;
                 notifyIcon1.Dispose();
+                System.Windows.Forms.Application.DoEvents();
             }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            NetworkHelper.ConnectionOptimizer();
+
             LoadSettings();
           
             SettingsWindow.LoadSettings();
@@ -697,6 +704,16 @@ namespace Sonic_Downloader
         {
             AboutWindow aw = new AboutWindow();
             aw.ShowDialog();
+        }
+
+        private void ToolStripButton6_Click(object sender, EventArgs e)
+        {
+            YoutubeDownloaderWindow ydw = new YoutubeDownloaderWindow();
+            DialogResult r=ydw.ShowDialog();
+            if(r==DialogResult.OK)
+            {
+                ReDownload(ydw.URL,ydw.FileName);
+            }
         }
     }
 }
