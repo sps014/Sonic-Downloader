@@ -152,7 +152,7 @@ namespace Sonic.Downloader
                                 if (watch.ElapsedMilliseconds >= 1000)
                                 {
 
-                                    File.TransferRate = downloadedAmountTillExecuted;
+                                    File.TransferRate = downloadedAmountTillExecuted*File.DegreeOfParallelism;
                                     downloadedAmountTillExecuted = 0;
 
                                     // reports progress event 

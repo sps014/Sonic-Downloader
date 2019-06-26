@@ -92,6 +92,7 @@
     <Compile Include="Sonic\HttpServer\SonicMIMETypes.cs" />
     <Compile Include="Sonic\HttpServer\SonicRequest.cs" />
     <Compile Include="Sonic\HttpServer\SonicResponse.cs" />
+    <Compile Include="Sonic\Internet\InternetTime.cs" />
     <Compile Include="Sonic\YoutubeStreams\YoutubeParser.cs" />
     <Compile Include="Window\AboutWindow.cs">
       <SubType>Form</SubType>

@@ -418,10 +418,12 @@ namespace Sonic_Downloader
             });
             
         }
+
         private void parser_Redownload(object sender, Downloadable file)
         {
             Invoke((MethodInvoker)delegate ()
             {
+                 
                 Downloader downloader = new Downloader(file);
                 downloader.Timeout = SettingsWindow.GeneralSettings.Timeout;
                 downloader.OnError += Down_OnError;
@@ -437,7 +439,8 @@ namespace Sonic_Downloader
         private void Downloader_OnProgress(object sender, ProgressEventArgs e)
         {
             Invoke((MethodInvoker)delegate ()
-            {
+            { 
+
                 UpdateChangesInGrid();
                 ToggleButtons(sender as Downloader);
                 var downloader = sender as Downloader;
