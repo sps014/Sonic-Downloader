@@ -45,7 +45,11 @@ namespace Sonic_Downloader.Window
 
             textBox1.Text = File.URL;
             label9.Text = downloader.DownloadStatus.ToString();
+            if(File.DownloadType!=DownloadTypes.SinglePartUnknownSize)
             label11.Text = NetworkHelper.DataFormatter(File.Downloaded)+"  ( "+File.Percent.ToString("0.00")+"% )";
+            else
+            label11.Text = NetworkHelper.DataFormatter(File.Downloaded);
+
             label12.Text = NetworkHelper.DataFormatter(File.TransferRate) + "/Sec";
             label14.Text = "No";
             Text = downloader.File.FileName;
@@ -57,6 +61,8 @@ namespace Sonic_Downloader.Window
 
             if (File.DownloadType != DownloadTypes.SinglePartUnknownSize)
             {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+
                 label10.Text = NetworkHelper.DataFormatter(File.Size);
                 label13.Text = NetworkHelper.TimeLeft(File.TransferRate, File.Downloaded, File.Size);
 
@@ -81,8 +87,9 @@ namespace Sonic_Downloader.Window
             else
             {
                 button1.Enabled = false;
-                label10.Text = File.Size.ToString();
+                label10.Text ="Unknown";
                 label13.Text = "Undefined";
+                progressBar1.Style = ProgressBarStyle.Marquee;
 
             }
         }

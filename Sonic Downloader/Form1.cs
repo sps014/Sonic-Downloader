@@ -7,11 +7,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace Sonic_Downloader
 {
     public partial class Form1 : Form
     {
+
 
         public List<Downloader> DownloaderList = new List<Downloader>();
 
@@ -32,8 +35,8 @@ namespace Sonic_Downloader
         public Form1()
         {
             InitializeComponent();
-
         }
+
         private void AddURL(string URL=null)
         {
             AddURLWindow auw = new AddURLWindow();
