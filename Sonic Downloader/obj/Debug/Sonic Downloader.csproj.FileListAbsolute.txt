@@ -1,0 +1,34 @@
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Sonic Downloader.exe.config
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Sonic Downloader.exe
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Sonic Downloader.pdb
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\AngleSharp.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\CliWrap.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\LtGt.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Newtonsoft.Json.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Sprache.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\System.Text.Encoding.CodePages.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\YoutubeExplode.dll
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\AngleSharp.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\CliWrap.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\LtGt.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Newtonsoft.Json.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\Sprache.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\bin\Debug\YoutubeExplode.xml
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.csprojAssemblyReference.cache
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.exe.config
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Form1.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Properties.Resources.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.AboutWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.AddURLWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.CurrentDownloadWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.DownloadNowWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.FilePropertiesWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.SettingsWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic_Downloader.Window.YoutubeDownloaderWindow.resources
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.csproj.GenerateResource.cache
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.csproj.CoreCompileInputs.cache
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.csproj.CopyComplete
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.exe
+C:\Users\shive\OneDrive\Documents\Visual Studio 2019\Projects\Sonic Downloader\Sonic Downloader\obj\Debug\Sonic Downloader.pdb
