@@ -20,4 +20,4 @@ It smartly runs in background.
 
 ## Important Note
 Product is not yet finished and it will definately contain bugs.
-Todo Dynamic Segmentation will be implemented later , it is easy to entend library to support it
+Todo Dynamic Segmentation will be implemented later , it is easy to extend the core library to support it.
