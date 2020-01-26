@@ -1,4 +1,4 @@
-# Sonic Downloader (Pre Alpha Release)
+# Sonic Downloader (Alpha Release)
 Multi threaded downloader , it is faster than few  paid Download Managers out there,
 It does not require time taking merging process of temporary files.
 Parallel requests are made to download a given file.
