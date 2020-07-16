@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using System.Drawing;
 
-namespace testApp
+namespace Sonic_Downloader
 {
     public class MainWindow : Window
     {
