@@ -1,4 +1,4 @@
-# Sonic Downloader (Alpha Release)
+# Sonic Downloader
 Multi threaded downloader , it is faster than few  paid Download Managers out there,
 It does not require time taking merging process of temporary files.
 Parallel requests are made to download a given file.
@@ -18,6 +18,3 @@ It smartly runs in background.
 
 
 
-## Important Note
-Product is not yet finished and it will definately contain bugs.
-Todo Dynamic Segmentation will be implemented later , it is easy to extend the core library to support it.
